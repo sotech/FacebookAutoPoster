@@ -14,8 +14,5 @@ All files are mandatory. Otherwise the program will not run correctly
 
 Simply run the program and let it do the magic
 
-Example
-[datos.txt]
+*The login information must be in 2 lines, the first one the username and the second one the password
 
-user@somemail.com
-pass12345
