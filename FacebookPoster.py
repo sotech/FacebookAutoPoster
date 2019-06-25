@@ -1,4 +1,4 @@
-'''
+﻿'''
 PYTHON SCRIPT: Facebook Auto Poster
 Autor: German Sommariva
 Contacto
@@ -25,6 +25,7 @@ def CargarGrupos():
     for grupo in archivo.readlines():
         lg.append(grupo)
     archivo.close()
+    return lg
 
 def CargarImagen():
     usi = int(input('''
@@ -39,11 +40,14 @@ def CargarImagen():
             0. No usar imagen
             1. Usar imagen
         '''))
-    if (usi == 1):
+    return usi
+
+def CargarDireImagen(op):
+    if (op == 1):
         print("Cargando direccion de la imagen")
         # Imagen
         imagen = os.path.join(os.getcwd(), "imagen.jpg")
-    return usi
+    return imagen
 
 def CargarLogin():
     # Datos previos
@@ -56,9 +60,7 @@ def CargarLogin():
     archivo.close()
     # Fin de uso del archivo
 
-    u = lineas[0]
-    c = lineas[1]
-    return u, c
+    return lineas
 
 #Funcion Logear
 def LogearFacebook(u,c):
@@ -76,6 +78,7 @@ def LogearFacebook(u,c):
         return True
     except:
         return False
+
 ##########
 #Navegador
 ##########
@@ -106,7 +109,12 @@ if "www.grupoprueba1.com" in lista_grupos:
     browser.quit()
 
 usar_imagen = CargarImagen()
-usuario, contra = CargarLogin()
+imagen = CargarDireImagen(usar_imagen)
+datos_login = CargarLogin()
+
+usuario = datos_login[0]
+contra = datos_login[1]
+
 if usuario == "usuarioprueba" or contra == "contraseñaprueba":
     print("Se estan usando datos de login predeterminada. Modifique el archivo \"datos.txt\" con sus propios datos")
     browser.quit()
@@ -114,44 +122,40 @@ if usuario == "usuarioprueba" or contra == "contraseñaprueba":
 print("Logeando")
 LogearFacebook(usuario, contra)
 #Logear
+#Recorrido de grupos
+i = 1
+for grupo in lista_grupos:
+    try:
+        print("Entrando al grupo " + str(i) + ". Link: " + grupo)
+        browser.get(grupo)
+        time.sleep(5)
 
-if LogearFacebook(usuario,contra):
-    #Recorrido de grupos
-    i = 1
-    for grupo in lista_grupos:
-        try:
-            print("Entrando al grupo " + str(i) + ". Link: " + grupo)
-            browser.get(grupo)
-            time.sleep(5)
+        print("Realizando posteo")
 
-            print("Realizando posteo")
+        #Ubicar la caja de posteo
+        p = browser.find_element_by_xpath("//*[@name='xhpc_message_text']")
+        print("Enviando mensaje")
+        #Enviando mensaje
+        p.send_keys(mensaje)
+        time.sleep(3)
 
-            #Ubicar la caja de posteo
-            p = browser.find_element_by_xpath("//*[@name='xhpc_message_text']")
-            print("Enviando mensaje")
-            #Enviando mensaje
-            p.send_keys(mensaje)
-            time.sleep(3)
-
-            if usar_imagen == 1:
-                #Cargar imagen
-                print("Enviando imagen")
-                img = browser.find_element_by_xpath("//input[@class='_n _5f0v']")
-                img.send_keys(imagen)
-                time.sleep(10)
-
-            #Posteando
-            submit = browser.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[2]/div[2]/div[3]/div[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/span/button')
-            print("Posteando")
-            submit.click()
+        if usar_imagen == 1:
+            #Cargar imagen
+            print("Enviando imagen")
+            img = browser.find_element_by_xpath("//input[@class='_n _5f0v']")
+            img.send_keys(imagen)
             time.sleep(10)
 
-            print(" ")
-        except:
-            print("Ocurrio un error con el grupo " + str(i) + ". Link: " + grupo)
-        i+=1
-    print("Proceso finalizado")
-else:
-    print("Ocurrio un error en el Logeo")
+        #Posteando
+        submit = browser.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[2]/div[2]/div[3]/div[1]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/span/button')
+        print("Posteando")
+        submit.click()
+        time.sleep(10)
+
+        print(" ")
+    except:
+        print("Ocurrio un error con el grupo " + str(i) + ". Link: " + grupo)
+    i+=1
+print("Proceso finalizado")
 
 browser.quit()
