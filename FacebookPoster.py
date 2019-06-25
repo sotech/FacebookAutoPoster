@@ -1,3 +1,10 @@
+'''
+PYTHON SCRIPT: Facebook Auto Poster
+Autor: German Sommariva
+Contacto
+Facebook: www.facebook.com/german.sommariva
+'''
+
 from selenium import webdriver
 import os
 import time
