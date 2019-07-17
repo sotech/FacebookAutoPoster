@@ -47,6 +47,8 @@ def CargarDireImagen(op):
         print("Cargando direccion de la imagen")
         # Imagen
         imagen = os.path.join(os.getcwd(), "imagen.jpg")
+    else:
+        imagen = ""
     return imagen
 
 def CargarLogin():
@@ -83,7 +85,7 @@ def LogearFacebook(u,c):
 #Navegador
 ##########
 print("Iniciando Programa")
-
+usar_imagen = CargarImagen()
 print("Configurando navegador")
 #Configuracion
 perfil = webdriver.FirefoxProfile()
@@ -108,7 +110,7 @@ if "www.grupoprueba1.com" in lista_grupos:
     print("Se esta usando la lista de grupos predeterminada. Modifique el archivo \"grupos.txt\" con su propia lista")
     browser.quit()
 
-usar_imagen = CargarImagen()
+
 imagen = CargarDireImagen(usar_imagen)
 datos_login = CargarLogin()
 
@@ -124,6 +126,7 @@ LogearFacebook(usuario, contra)
 #Logear
 #Recorrido de grupos
 i = 1
+cantidad_lograda = 0
 for grupo in lista_grupos:
     try:
         print("Entrando al grupo " + str(i) + ". Link: " + grupo)
@@ -151,11 +154,12 @@ for grupo in lista_grupos:
         print("Posteando")
         submit.click()
         time.sleep(10)
-
+        cantidad_lograda += 1
         print(" ")
     except:
         print("Ocurrio un error con el grupo " + str(i) + ". Link: " + grupo)
-    i+=1
+    i += 1
+print("Se logró publicar en " + str(cantidad_lograda) + "/" + str(len(lista_grupos)) + " grupos.")
 print("Proceso finalizado")
 
 browser.quit()
